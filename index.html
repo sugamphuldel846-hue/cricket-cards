@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#0e2230"><link rel="apple-touch-icon" href="icons/icon-192.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes">
+<title>Cricket Clash – Stat Card Game</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0e2230;--panel:#173448;--ink:#f2efe6;--mute:#8fa9b8;--red:#c8362b;--gold:#e8b63c;--win:#3fae6a;--lose:#d9534f;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]){--bg:#e4eee8;--panel:#fff;--ink:#10241b;--mute:#4f6a5c}}
+:root[data-theme="dark"]{--bg:#0e2230;--panel:#173448;--ink:#f2efe6;--mute:#8fa9b8}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Barlow,system-ui,sans-serif;font-weight:500;min-height:100vh}
+main{max-width:960px;margin:0 auto;padding:16px}
+h1,h2{font-family:'Bebas Neue',Impact,sans-serif;font-weight:400;letter-spacing:.04em;margin:0}
+h1{font-size:2.4rem}
+.top{display:flex;justify-content:space-between;align-items:end;gap:12px;flex-wrap:wrap}
+.score{display:flex;gap:16px;font-weight:700}
+.score b{font-family:'Bebas Neue',Impact,sans-serif;font-size:1.6rem;font-weight:400;color:var(--gold)}
+.msg{margin:14px 0;padding:12px 14px;background:var(--panel);border-left:5px solid var(--gold);border-radius:6px;min-height:48px;display:flex;justify-content:space-between;align-items:center;gap:12px}
+button{font:700 1rem Barlow,system-ui,sans-serif}
+button.go{background:var(--red);color:#fff;border:0;border-radius:6px;padding:10px 18px;cursor:pointer}
+button:focus-visible,input:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.table{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.lbl{font-weight:700;color:var(--mute);margin-bottom:6px}
+.card{background:linear-gradient(180deg,var(--c1),var(--c2));border-radius:14px;padding:10px;color:#fff;box-shadow:0 6px 0 rgba(0,0,0,.25)}
+.card.back{background:repeating-linear-gradient(45deg,#1d4b3a 0 14px,#17402f 14px 28px);display:grid;place-items:center;min-height:420px;font-family:'Bebas Neue',Impact,sans-serif;font-size:2.2rem;letter-spacing:.1em;color:#e8b63c}
+.head{display:flex;justify-content:space-between;align-items:center;padding:2px 4px 8px}
+.nm{font-family:'Bebas Neue',Impact,sans-serif;font-size:1.7rem;line-height:1}
+.role{font-size:.85rem;opacity:.85}
+.av{display:block;margin:0 auto 6px;border-radius:10px;background:rgba(0,0,0,.22)}
+.ab{font-size:.8rem;text-align:center;min-height:2.4em;padding:0 4px 6px}
+.stats{background:rgba(0,0,0,.32);border-radius:10px;overflow:hidden}
+.row{display:flex;justify-content:space-between;width:100%;padding:9px 12px;border:0;background:transparent;color:#fff;text-align:left;border-bottom:1px solid rgba(255,255,255,.12)}
+.row:last-child{border-bottom:0}
+.row i{font-style:normal;font-family:'Bebas Neue',Impact,sans-serif;font-weight:400;font-size:1.3rem}
+button.row{cursor:pointer}
+button.row:hover{background:rgba(255,255,255,.18)}
+.row.win{background:var(--win)}.row.lose{background:var(--lose)}.row.tie{background:var(--gold);color:#222}
+.pot{color:var(--mute);margin-top:12px;text-align:center}
+.end{text-align:center;padding:30px 10px}
+.end h2{font-size:3rem;margin-bottom:12px}
+.menu{background:var(--panel);border-radius:10px;padding:16px;display:grid;gap:12px}
+.opts{display:flex;gap:8px;flex-wrap:wrap}
+button.opt{background:transparent;color:var(--ink);border:2px solid var(--mute);border-radius:8px;padding:9px 14px;cursor:pointer}
+button.opt.on{background:var(--gold);border-color:var(--gold);color:#222}
+.menu p{margin:0;color:var(--mute)}
+input{font:700 1.1rem Barlow,system-ui,sans-serif;padding:9px 12px;border-radius:8px;border:2px solid var(--mute);background:var(--bg);color:var(--ink);width:7em;text-transform:uppercase}
+.pile{display:flex;justify-content:center;min-height:160px;align-items:center}
+.mini{background:linear-gradient(180deg,var(--c1),var(--c2));color:#fff;border-radius:12px;width:110px;padding:10px 6px;text-align:center;box-shadow:0 5px 0 rgba(0,0,0,.25)}
+.mini.hit{outline:4px solid var(--gold)}.mini.stack{margin-right:12px;box-shadow:0 5px 0 rgba(0,0,0,.25),6px 6px 0 -1px rgba(255,255,255,.3),12px 12px 0 -2px rgba(255,255,255,.18)}.mini.empty{background:var(--panel);color:var(--mute);box-shadow:none}.mini b{display:block;font-family:'Bebas Neue',Impact,sans-serif;font-weight:400;font-size:3.6rem;line-height:1}
+.mini span{font-size:.85rem}
+@media (max-width:560px){.table{gap:8px}.card{padding:7px}.card.back{min-height:300px}.nm{font-size:1.2rem}.av{width:60px;height:60px}.row{padding:7px 8px;font-size:.85rem}.row i{font-size:1.1rem}.ab{font-size:.7rem}h1{font-size:1.9rem}}
+@media (prefers-reduced-motion:no-preference){.card,.mini{animation:pop .22s ease-out}@keyframes pop{from{transform:translateY(8px);opacity:.4}}}
+</style>
+</head>
+<body>
+<main>
+ <div class="top"><h1>Cricket Clash</h1><div class="score" id="score"></div></div>
+ <div class="msg"><span id="msg"></span><span id="act"></span></div>
+ <div id="board"></div>
+ <p class="pot" id="pot"></p>
+</main>
+<script>
+var NAT={IRE:['#169b62','#0b5c3a'],NED:['#f36c21','#a8420d'],SCO:['#0065bd','#003f7a'],ZIM:['#d4a017','#8a2a1a'],UAE:['#b22234','#5c1a1a'],USA:['#3c3b6e','#1d1c45'],CAN:['#d52b1e','#7e1912'],NAM:['#2d8a4a','#0f4d2b'],OMA:['#c8102e','#6e0a19'],PNG:['#3a3a3a','#8a1c1c'],KEN:['#1f6f43','#0c3f26'],IND:['#1b5fb5','#0d3a7a'],PAK:['#1f7a3f','#0f4d26'],ENG:['#b4233a','#6e1224'],AUS:['#d9a514','#8a6606'],WI:['#7b1f3a','#4a1023'],NZ:['#2a2f3a','#11141b'],SA:['#2f8f5b','#14573a'],SL:['#2a4fa0','#16296a'],AFG:['#2c7bb6','#154a73'],BAN:['#177a56','#0b4a33'],NEP:['#b0262c','#6a1219']};
+var RAW='Virat Kohli,IND,Batter,295,13906,58.2,93.5,50,5\nRohit Sharma,IND,Opener,265,10866,48.8,92.8,31,8\nMS Dhoni,IND,Wicketkeeper,350,10773,50.6,87.6,10,0\nSachin Tendulkar,IND,Opener,463,18426,44.8,86.2,49,154\nSourav Ganguly,IND,Opener,311,11363,41.0,73.7,22,100\nRahul Dravid,IND,Batter,344,10889,39.2,71.2,12,4\nYuvraj Singh,IND,All-rounder,304,8701,36.6,87.6,14,111\nVirender Sehwag,IND,Power hitter,251,8273,35.1,104.3,15,96\nKapil Dev,IND,All-rounder,225,3783,23.8,95.1,1,253\nAnil Kumble,IND,Spinner,271,938,10.5,75.0,0,337\nZaheer Khan,IND,Fast bowler,200,792,11.3,70.0,0,282\nHarbhajan Singh,IND,Spinner,236,1237,13.5,80.0,0,269\nJasprit Bumrah,IND,Fast bowler,89,55,6.1,66.0,0,149\nRavindra Jadeja,IND,All-rounder,197,2756,32.6,86.0,0,220\nHardik Pandya,IND,All-rounder,86,1769,34.0,110.0,0,84\nShubman Gill,IND,Opener,48,2328,58.2,102.7,6,0\nKL Rahul,IND,Wicketkeeper,75,2820,49.7,87.0,7,0\nShikhar Dhawan,IND,Opener,167,6793,44.1,91.3,17,0\nMohammed Shami,IND,Fast bowler,101,248,10.0,86.0,0,195\nKuldeep Yadav,IND,Spinner,106,130,8.1,72.0,0,172\nBabar Azam,PAK,Batter,117,5729,56.7,88.5,19,0\nWasim Akram,PAK,Fast bowler,356,3717,16.5,77.2,0,502\nWaqar Younis,PAK,Fast bowler,262,1010,8.8,84.0,0,416\nShoaib Akhtar,PAK,Fast bowler,163,544,8.8,75.0,0,247\nShahid Afridi,PAK,Power hitter,398,8064,23.6,117.0,6,395\nInzamam-ul-Haq,PAK,Batter,378,11739,39.5,74.2,10,3\nSaeed Anwar,PAK,Opener,247,8824,39.2,80.7,20,0\nImran Khan,PAK,All-rounder,175,3709,33.4,72.0,1,182\nYounis Khan,PAK,Batter,265,7249,31.2,75.0,7,0\nJaved Miandad,PAK,Batter,233,7381,41.7,67.0,8,7\nRicky Ponting,AUS,Batter,375,13704,42.0,80.4,30,3\nSteve Smith,AUS,Batter,155,5800,43.3,87.0,12,28\nDavid Warner,AUS,Opener,161,6932,45.3,97.3,22,0\nGlenn McGrath,AUS,Fast bowler,250,115,4.7,54.0,0,381\nShane Warne,AUS,Spinner,194,1018,13.1,74.0,0,293\nAdam Gilchrist,AUS,Wicketkeeper,287,9619,35.9,96.9,16,0\nMitchell Starc,AUS,Fast bowler,121,260,10.0,85.0,0,236\nGlenn Maxwell,AUS,Power hitter,141,3990,34.0,126.0,4,70\nBrett Lee,AUS,Fast bowler,221,1176,12.0,86.0,0,380\nJoe Root,ENG,Batter,171,6522,50.5,87.0,16,26\nBen Stokes,ENG,All-rounder,105,3000,38.9,95.0,3,74\nJos Buttler,ENG,Wicketkeeper,183,5022,40.5,118.0,11,0\nKevin Pietersen,ENG,Batter,136,4440,40.9,86.7,9,7\nEoin Morgan,ENG,Power hitter,248,7701,39.5,91.2,14,0\nAndrew Flintoff,ENG,All-rounder,141,3394,32.0,88.8,3,169\nJames Anderson,ENG,Fast bowler,194,273,4.3,70.0,0,269\nBrian Lara,WI,Batter,299,10405,40.5,79.5,19,4\nChris Gayle,WI,Power hitter,301,10480,37.8,87.2,25,167\nViv Richards,WI,Batter,187,6721,47.0,90.2,11,118\nKieron Pollard,WI,Power hitter,123,2706,26.0,94.7,3,55\nAndre Russell,WI,Power hitter,56,1034,27.2,130.0,0,70\nCourtney Walsh,WI,Fast bowler,205,252,4.0,60.0,0,227\nKane Williamson,NZ,Batter,165,6800,48.4,81.0,13,37\nRoss Taylor,NZ,Batter,236,8607,48.2,84.1,21,5\nBrendon McCullum,NZ,Wicketkeeper,260,6083,30.4,96.0,5,0\nTrent Boult,NZ,Fast bowler,114,125,6.0,70.0,0,211\nDaniel Vettori,NZ,Spinner,295,2253,17.3,88.0,0,305\nAB de Villiers,SA,Wicketkeeper,228,9577,53.5,101.1,25,7\nJacques Kallis,SA,All-rounder,328,11579,44.4,72.9,17,273\nHashim Amla,SA,Opener,181,8113,49.5,88.5,27,0\nDale Steyn,SA,Fast bowler,125,405,8.1,79.0,0,196\nQuinton de Kock,SA,Wicketkeeper,155,6770,45.7,96.0,21,0\nShaun Pollock,SA,All-rounder,303,3519,26.5,86.0,0,393\nHerschelle Gibbs,SA,Opener,248,8094,36.1,83.3,21,0\nKumar Sangakkara,SL,Wicketkeeper,404,14234,42.0,78.9,25,0\nMahela Jayawardene,SL,Batter,448,12650,33.4,78.9,19,6\nSanath Jayasuriya,SL,Power hitter,445,13430,32.4,91.2,28,323\nMuttiah Muralitharan,SL,Spinner,350,674,6.8,82.0,0,534\nLasith Malinga,SL,Fast bowler,226,567,8.4,85.0,0,338\nTillakaratne Dilshan,SL,Opener,330,10290,39.3,86.2,22,106\nShakib Al Hasan,BAN,All-rounder,247,7570,37.8,82.0,9,317\nTamim Iqbal,BAN,Opener,243,8357,36.7,78.8,14,0\nMushfiqur Rahim,BAN,Wicketkeeper,274,7795,36.4,78.0,9,0\nRashid Khan,AFG,Spinner,103,1000,14.0,115.0,0,198\nSuresh Raina,IND,Batter,226,5615,35.3,93.5,5,36\nGautam Gambhir,IND,Opener,147,5238,39.7,86.2,11,0\nRavichandran Ashwin,IND,Spinner,116,707,16.0,87.0,0,156\nBhuvneshwar Kumar,IND,Fast bowler,121,552,11.5,77.0,0,141\nRishabh Pant,IND,Wicketkeeper,31,871,33.5,106.0,0,0\nShreyas Iyer,IND,Batter,70,2900,47.0,96.0,5,0\nMohammed Siraj,IND,Fast bowler,44,60,6.0,70.0,0,71\nYuzvendra Chahal,IND,Spinner,72,70,6.4,60.0,0,121\nAxar Patel,IND,All-rounder,66,600,17.0,90.0,0,65\nSuryakumar Yadav,IND,Power hitter,37,773,25.8,105.0,0,0\nMichael Clarke,AUS,Batter,245,7981,44.6,78.7,8,57\nMatthew Hayden,AUS,Opener,161,6133,43.8,78.9,10,0\nMichael Hussey,AUS,Batter,185,5442,48.2,87.2,3,0\nMark Waugh,AUS,Batter,244,8500,39.4,76.9,18,85\nSteve Waugh,AUS,All-rounder,325,7569,32.9,75.0,3,195\nAndrew Symonds,AUS,All-rounder,198,5088,39.8,92.4,6,133\nShane Watson,AUS,All-rounder,190,5757,40.5,90.1,9,168\nAaron Finch,AUS,Opener,146,5406,41.0,87.0,17,0\nJosh Hazlewood,AUS,Fast bowler,80,150,7.0,75.0,0,120\nTravis Head,AUS,Power hitter,70,2700,41.7,98.0,7,12\nAlastair Cook,ENG,Opener,92,3204,36.9,77.1,5,0\nIan Bell,ENG,Batter,161,5416,35.3,77.2,4,0\nPaul Collingwood,ENG,All-rounder,197,5092,35.3,76.9,5,111\nMarcus Trescothick,ENG,Opener,123,4335,37.4,85.2,12,0\nGraeme Swann,ENG,Spinner,79,215,9.0,88.0,0,104\nStuart Broad,ENG,Fast bowler,121,529,10.0,87.0,0,178\nJonny Bairstow,ENG,Wicketkeeper,99,3498,40.2,98.0,11,0\nJason Roy,ENG,Opener,116,4271,41.0,105.0,11,0\nMoeen Ali,ENG,All-rounder,138,2355,26.5,95.0,0,111\nAdil Rashid,ENG,Spinner,137,500,12.0,90.0,0,190\nMark Wood,ENG,Fast bowler,75,160,8.0,90.0,0,118\nMohammad Yousuf,PAK,Batter,288,9720,41.7,75.1,15,0\nSaqlain Mushtaq,PAK,Spinner,169,900,10.0,80.0,0,288\nAbdul Razzaq,PAK,All-rounder,265,5080,30.0,82.0,0,269\nMisbah-ul-Haq,PAK,Batter,162,5122,43.4,73.7,0,0\nRamiz Raja,PAK,Opener,198,5841,32.9,66.0,9,0\nMohammad Hafeez,PAK,All-rounder,218,6614,32.9,80.0,11,139\nShoaib Malik,PAK,All-rounder,287,7534,34.6,81.9,9,158\nFakhar Zaman,PAK,Opener,85,3651,46.0,93.0,7,0\nShaheen Afridi,PAK,Fast bowler,60,76,7.0,70.0,0,107\nMohammad Amir,PAK,Fast bowler,61,230,8.0,80.0,0,81\nSaeed Ajmal,PAK,Spinner,113,300,8.0,70.0,0,184\nMohammad Rizwan,PAK,Wicketkeeper,78,2200,41.0,83.0,1,0\nSaleem Malik,PAK,Batter,283,7170,32.9,72.0,5,32\nGraeme Smith,SA,Opener,197,6989,37.9,81.6,10,18\nFaf du Plessis,SA,Batter,143,5507,47.0,90.9,12,0\nHansie Cronje,SA,All-rounder,188,5565,38.6,74.0,2,114\nAllan Donald,SA,Fast bowler,164,652,11.0,73.0,0,272\nMakhaya Ntini,SA,Fast bowler,173,282,6.0,70.0,0,266\nImran Tahir,SA,Spinner,107,119,7.0,70.0,0,173\nKagiso Rabada,SA,Fast bowler,100,300,8.0,80.0,0,150\nDavid Miller,SA,Power hitter,170,4300,40.0,100.0,4,0\nLance Klusener,SA,All-rounder,171,3576,41.1,89.9,0,192\nGary Kirsten,SA,Opener,185,6798,40.9,70.0,13,0\nHeinrich Klaasen,SA,Wicketkeeper,60,2000,43.0,117.0,4,0\nMartin Guptill,NZ,Opener,198,7346,41.7,87.0,18,0\nStephen Fleming,NZ,Batter,280,8037,32.4,71.0,8,1\nNathan Astle,NZ,All-rounder,223,7090,34.9,82.0,16,99\nChris Cairns,NZ,All-rounder,215,4950,29.4,86.0,4,201\nTim Southee,NZ,Fast bowler,161,800,12.0,100.0,0,221\nJimmy Neesham,NZ,All-rounder,80,1500,31.0,110.0,0,70\nMitchell Santner,NZ,Spinner,90,900,16.0,100.0,0,110\nLockie Ferguson,NZ,Fast bowler,55,80,6.0,80.0,0,92\nMartin Crowe,NZ,Batter,143,4704,38.6,72.0,4,29\nGordon Greenidge,WI,Opener,128,5134,45.0,65.0,11,0\nDesmond Haynes,WI,Opener,238,8648,41.4,63.1,17,0\nClive Lloyd,WI,Batter,87,1977,39.5,79.0,1,8\nMalcolm Marshall,WI,Fast bowler,136,955,15.0,75.0,0,157\nMichael Holding,WI,Fast bowler,102,282,6.0,70.0,0,142\nCurtly Ambrose,WI,Fast bowler,176,639,11.0,65.0,0,225\nShivnarine Chanderpaul,WI,Batter,268,8778,41.6,70.7,11,14\nSunil Narine,WI,Spinner,65,200,8.0,80.0,0,92\nJason Holder,WI,All-rounder,140,2200,24.0,85.0,0,159\nShai Hope,WI,Wicketkeeper,120,5000,49.0,78.0,16,0\nAravinda de Silva,SL,Batter,308,9284,34.9,86.0,11,106\nArjuna Ranatunga,SL,Batter,269,7456,35.8,77.0,4,79\nChaminda Vaas,SL,Fast bowler,322,2025,13.0,79.0,0,400\nAngelo Mathews,SL,All-rounder,226,5900,41.0,86.0,3,120\nWanindu Hasaranga,SL,Spinner,48,550,15.0,115.0,0,67\nRangana Herath,SL,Spinner,71,250,9.0,70.0,0,74\nUpul Tharanga,SL,Opener,235,6951,33.3,78.0,15,0\nAjantha Mendis,SL,Spinner,87,250,8.0,80.0,0,152\nMashrafe Mortaza,BAN,Fast bowler,220,1787,23.0,90.0,0,270\nMahmudullah,BAN,All-rounder,229,5300,34.0,79.0,4,82\nMustafizur Rahman,BAN,Fast bowler,100,110,7.0,85.0,0,155\nLiton Das,BAN,Wicketkeeper,90,2800,32.0,88.0,5,0\nMehidy Hasan,BAN,All-rounder,85,1500,24.0,80.0,0,100\nTaskin Ahmed,BAN,Fast bowler,80,100,6.0,75.0,0,100\nMohammad Ashraful,BAN,Batter,177,3468,22.0,77.0,4,8\nMohammad Nabi,AFG,All-rounder,165,3300,29.0,95.0,0,165\nMujeeb Ur Rahman,AFG,Spinner,90,200,8.0,90.0,0,100\nRahmanullah Gurbaz,AFG,Wicketkeeper,45,1500,34.0,88.0,5,0\nIbrahim Zadran,AFG,Opener,50,1800,40.0,80.0,6,0\nHashmatullah Shahidi,AFG,Batter,100,3000,34.0,78.0,0,0\nNajibullah Zadran,AFG,Power hitter,120,2800,26.0,98.0,0,0\nMohammad Shahzad,AFG,Wicketkeeper,84,2727,33.0,95.0,6,0\nAndy Flower,ZIM,Wicketkeeper,213,6786,35.3,77.0,4,0\nGrant Flower,ZIM,All-rounder,221,6571,34.2,70.0,6,104\nHeath Streak,ZIM,All-rounder,189,2943,24.0,73.0,0,239\nBrendan Taylor,ZIM,Wicketkeeper,205,6684,36.0,78.0,11,0\nSikandar Raza,ZIM,All-rounder,130,4000,33.0,88.0,6,80\nSean Williams,ZIM,All-rounder,160,4300,30.0,80.0,6,70\nTatenda Taibu,ZIM,Wicketkeeper,150,3393,25.0,66.0,2,0\nBlessing Muzarabani,ZIM,Fast bowler,60,200,8.0,70.0,0,70\nPaul Stirling,IRE,Opener,150,4600,34.0,90.0,14,35\nKevin O\'Brien,IRE,All-rounder,153,3619,29.0,90.0,2,114\nNiall O\'Brien,IRE,Wicketkeeper,100,2500,26.0,72.0,3,0\nJosh Little,IRE,Fast bowler,45,100,6.0,80.0,0,75\nMark Adair,IRE,All-rounder,50,500,15.0,95.0,0,50\nGeorge Dockrell,IRE,Spinner,100,700,14.0,80.0,0,80\nBoyd Rankin,IRE,Fast bowler,75,100,6.0,70.0,0,100\nHarry Tector,IRE,Batter,50,1800,40.0,92.0,3,0\nRyan ten Doeschate,NED,All-rounder,33,1541,67.0,100.0,5,55\nMax O\'Dowd,NED,Opener,40,1100,30.0,85.0,2,0\nBas de Leede,NED,All-rounder,35,900,30.0,90.0,1,40\nScott Edwards,NED,Wicketkeeper,35,900,30.0,85.0,0,0\nLogan van Beek,NED,Fast bowler,25,150,9.0,80.0,0,30\nKyle Coetzer,SCO,Opener,100,3200,33.0,80.0,4,0\nRichie Berrington,SCO,All-rounder,95,2700,34.0,85.0,1,35\nGeorge Munsey,SCO,Opener,60,1500,26.0,95.0,1,0\nMark Watt,SCO,Spinner,45,150,9.0,80.0,0,50\nSafyaan Sharif,SCO,Fast bowler,60,200,8.0,80.0,0,80\nSandeep Lamichhane,NEP,Spinner,53,150,6.0,80.0,0,100\nRohit Paudel,NEP,Batter,50,1500,34.0,82.0,1,2\nKushal Bhurtel,NEP,Opener,50,1700,34.0,85.0,2,0\nDipendra Singh Airee,NEP,All-rounder,45,1100,28.0,95.0,0,25\nGyanendra Malla,NEP,Batter,50,1200,27.0,78.0,1,5\nSompal Kami,NEP,Fast bowler,50,100,6.0,75.0,0,50\nKaran KC,NEP,Fast bowler,35,60,5.0,70.0,0,40\nParas Khadka,NEP,All-rounder,50,1500,34.0,75.0,1,12\nMuhammad Waseem,UAE,Opener,50,1700,35.0,92.0,3,0\nChirag Suri,UAE,Batter,60,1500,27.0,75.0,1,0\nRohan Mustafa,UAE,All-rounder,50,900,22.0,80.0,0,40\nSaurabh Netravalkar,USA,Fast bowler,45,100,7.0,70.0,0,60\nMonank Patel,USA,Wicketkeeper,50,1000,26.0,85.0,0,0\nAaron Jones,USA,Power hitter,40,900,24.0,105.0,0,0\nSteven Taylor,USA,Opener,50,1100,25.0,80.0,0,0\nCorey Anderson,USA,All-rounder,50,1300,30.0,100.0,0,35\nHarmeet Singh,USA,Spinner,30,200,10.0,80.0,0,30\nNicholas Kirton,CAN,Opener,40,1200,30.0,75.0,0,0\nNavneet Dhaliwal,CAN,Batter,40,1100,28.0,76.0,1,0\nSaad Bin Zafar,CAN,All-rounder,45,700,17.0,75.0,0,45\nGerhard Erasmus,NAM,All-rounder,50,1300,28.0,78.0,0,25\nDavid Wiese,NAM,All-rounder,50,1000,26.0,100.0,0,60\nJan Frylinck,NAM,All-rounder,50,700,20.0,90.0,0,50\nRuben Trumpelmann,NAM,Fast bowler,40,100,6.0,75.0,0,60\nJJ Smit,NAM,All-rounder,40,700,20.0,90.0,0,25\nZeeshan Maqsood,OMA,All-rounder,50,1000,25.0,80.0,0,45\nBilal Khan,OMA,Fast bowler,40,50,5.0,70.0,0,55\nAssad Vala,PNG,All-rounder,50,1200,30.0,75.0,0,20\nCharles Amini,PNG,All-rounder,40,800,24.0,80.0,0,10\nSteve Tikolo,KEN,All-rounder,130,3200,28.0,75.0,2,45\nCollins Obuya,KEN,All-rounder,104,2000,24.0,75.0,0,45';
+var ABN={dbl:['⚡','Double Strike','your stat counts ×1.5'],shd:['🛡️','Shield','keeps your card if you lose'],stl:['🎯','Steal','take 1 extra card if you win']};
+var S=['Matches','Runs','Average','Strike rate','Centuries','Wickets'];
+var P=RAW.split('\n').map(function(l,k){var a=l.split(',');return{n:a[0],t:a[1],role:a[2],v:[+a[3],+a[4],+a[5],+a[6],+a[7],+a[8]],ab:k%4===0?['dbl','shd','stl'][(k/4|0)%3]:null}});
+var MAX=S.map(function(_,i){return Math.max.apply(null,P.map(function(p){return p.v[i]}))});
+var $=function(id){return document.getElementById(id)};
+var G=null,opp='cpu',me=0,cover=false,room=null,host=false,wait=false,code='',R=undefined,tm,hb,sm='s',so='cpu',cnt=24,note='';
+
+function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=a[i];a[i]=a[j];a[j]=t}return a}
+function deal(m){var d=shuffle(P.map(function(_,i){return i}));return{mode:m,hands:[d.slice(0,cnt/2),d.slice(cnt/2,cnt)],pot:[],piles:[[],[]],turn:0,phase:'pick',last:null,over:-1}}
+function nm(s){return opp==='hot'?'Player '+(s+1):s===me?'You':opp==='cpu'?'CPU':'Friend'}
+function vs(){return opp==='hot'?G.turn:me}
+function fv(i,x){return i==2||i==3?x.toFixed(1):Math.round(x)}
+function sv(c,i){return P[c].v[i]*(P[c].ab==='dbl'?1.5:1)}
+function ini(c){return P[c].n[0]}
+function chk(){var a=G.hands[0].length,b=G.hands[1].length;G.over=a&&b?-1:a?0:b?1:2}
+
+function doPick(i){var t=G.turn,a=G.hands[t][0],b=G.hands[1-t][0],x=sv(a,i),y=sv(b,i);G.last={s:t,i:i,a:a,b:b,x:x,y:y,w:x>y?t:x<y?1-t:-1};G.phase='reveal'}
+function doNext(){var L=G.last,t=L.s,h=G.hands,sc=[];h[0].shift();h[1].shift();sc[t]=L.a;sc[1-t]=L.b;
+ if(L.w<0)G.pot.push(L.a,L.b);
+ else{var w=L.w,l=1-w;
+  if(P[sc[l]].ab==='shd'){h[l].push(sc[l]);h[w].push(sc[w])}
+  else{var g=[sc[w],sc[l]].concat(G.pot);G.pot=[];if(P[sc[w]].ab==='stl'&&h[l].length)g.push(h[l].shift());h[w]=h[w].concat(shuffle(g))}
+  G.turn=w}
+ G.phase='pick';chk()}
+function doThrow(){var t=G.turn,h=G.hands[t];if(!h.length)return;var c=h.shift(),o=G.piles[1-t],top=o.length?o[o.length-1]:undefined;G.piles[t].push(c);
+ G.last={s:t,c:c,m:false,n:G.piles[0].length+G.piles[1].length};
+ if(top!==undefined&&ini(c)===ini(top)){G.last.m=true;G.last.o=top;G.hands[t]=h.concat(shuffle(G.piles[0].concat(G.piles[1])));G.piles=[[],[]]}else G.turn=1-t;
+ if(!G.hands[G.turn].length)G.over=1-G.turn}
+function exec(seat,k,v){if(!G||G.over>=0)return;
+ if(k==='pick'&&G.mode==='s'&&G.phase==='pick'&&seat===G.turn&&v>=0&&v<6&&v%1===0)doPick(v);
+ else if(k==='next'&&G.mode==='s'&&G.phase==='reveal'){doNext();if(opp==='hot'&&G.over<0)cover=true}
+ else if(k==='throw'&&G.mode==='i'&&seat===G.turn)doThrow();
+ else return;
+ if(opp==='net'&&host)em('st',G);
+ render()}
+function act(k,v){if(opp==='net'&&!host)em('act',{k:k,v:v});else exec(opp==='hot'?G.turn:me,k,v)}
+function em(t,d){if(room)room.emit(t,d).catch(function(){})}
+function okg(g){try{return [0,1].every(function(i){return g.hands[i].length>=0})&&[].concat(g.hands[0],g.hands[1],g.pot,g.piles[0],g.piles[1]).every(function(c){return c>=0&&c<P.length&&c%1===0})&&(g.turn===0||g.turn===1)&&(g.mode==='s'||g.mode==='i')}catch(e){return false}}
+function cbest(){var c=P[G.hands[1][0]],b=0,bv=-1;c.v.forEach(function(x,i){var n=sv(G.hands[1][0],i)/MAX[i];if(n>bv){bv=n;b=i}});return b}
+
+function av(p){var c=NAT[p.t];return '<svg class="av" width="84" height="84" viewBox="0 0 92 92" aria-hidden="true"><circle cx="46" cy="34" r="17" fill="#e0b48c"/><path d="M12 92c0-22 14-34 34-34s34 12 34 34z" fill="#f2efe6"/><path d="M28 30c0-12 8-19 18-19s18 7 18 19z" fill="'+c[1]+'" stroke="#fff" stroke-width="2"/><text x="46" y="84" text-anchor="middle" font-family="Bebas Neue,Impact,sans-serif" font-size="20" fill="'+c[0]+'">'+p.n.split(' ').map(function(w){return w[0]}).join('').slice(0,2)+'</text></svg>'}
+function canPick(){return G.mode==='s'&&G.phase==='pick'&&G.turn===vs()&&!cover&&G.over<0&&!(opp==='cpu'&&G.turn===1)}
+function card(c,own,hl){var p=P[c],n=NAT[p.t],L=G.last,show=G.phase==='reveal'&&G.mode==='s';
+ var rows=S.map(function(s,i){var cls='row',tg='div',at='';
+  if(own&&canPick()){tg='button';at=' data-i="'+i+'"'}
+  if(show&&L.i===i)cls+=' '+hl;
+  return '<'+tg+' class="'+cls+'"'+at+'><span>'+s+'</span><i>'+fv(i,p.v[i])+'</i></'+tg+'>'}).join('');
+ var b=p.ab?ABN[p.ab][0]+' '+ABN[p.ab][1]+': '+ABN[p.ab][2]:'&nbsp;';
+ return '<div class="card" style="--c1:'+n[0]+';--c2:'+n[1]+'"><div class="head"><div><div class="nm">'+p.n+'</div><div class="role">'+p.role+'</div></div><div class="nm">'+p.t+'</div></div>'+av(p)+'<div class="ab">'+b+'</div><div class="stats">'+rows+'</div></div>'}
+function mini(c,h,k){var n=NAT[P[c].t];return '<div class="mini'+(h?' hit':'')+(k>1?' stack':'')+'" style="--c1:'+n[0]+';--c2:'+n[1]+'"><b>'+ini(c)+'</b><span>'+P[c].n+'</span></div>'}
+function yw(s){return nm(s)==='You'?' win':' wins'}
+function msgS(){var L=G.last;
+ if(G.phase==='pick'){var t=G.turn;return opp==='hot'?nm(t)+', tap the stat you think will win.':t===me?'Your turn. Tap the stat you think will win.':nm(t)+' is choosing a stat…'}
+ var w=L.w,r=nm(L.s)+' picked '+S[L.i]+': '+fv(L.i,L.x)+' vs '+fv(L.i,L.y)+'. ';
+ r+=w<0?'Tie: both cards go to the pot.':nm(w)+yw(w)+' both cards.';
+ if(w>=0){var wc=w===L.s?L.a:L.b,lc=w===L.s?L.b:L.a;if(P[lc].ab==='shd')r+=' 🛡️ Shield: the losing card stays with its owner.';else if(P[wc].ab==='stl')r+=' 🎯 Steal: one extra card taken.'}
+ if(P[L.a].ab==='dbl'||P[L.b].ab==='dbl')r+=' ⚡ Double Strike was in play.';
+ return r}
+function msgI(){var L=G.last;if(!L)return 'Throw a card onto your own pile. If its first-name initial matches the top card of the other pile, you win every card on both piles.';
+ var r=nm(L.s)+' threw '+P[L.c].n+' ('+ini(L.c)+'). ';
+ r+=L.m?'Same initial! '+nm(L.s)+(nm(L.s)==='You'?' take':' takes')+' both piles ('+L.n+' cards).':'No match.';
+ return r}
+function bind(){document.querySelectorAll('button.row').forEach(function(b){b.onclick=function(){act('pick',+b.dataset.i)}})}
+
+function render(){
+ clearTimeout(tm);
+ if(!G){menu();return}
+ try{view()}catch(e){G=null;menu()}}
+function view(){
+ var v=vs(),h=G.hands,A=$('act'),B=$('board'),M=$('msg');
+ $('score').innerHTML='<span>'+nm(v)+' <b>'+h[v].length+'</b></span><span>'+nm(1-v)+' <b>'+h[1-v].length+'</b></span>';
+ $('pot').textContent=G.mode==='s'&&G.pot.length?'Tied cards in the pot: '+G.pot.length:'';
+ if(G.over>=0){M.textContent='';A.innerHTML='';
+  B.innerHTML='<div class="end"><h2>'+(G.over>1?'Draw!':nm(G.over)+yw(G.over)+' the match!')+'</h2><button class="go" id="again">Play again</button> <button class="go" id="home">Menu</button></div>';
+  $('home').onclick=home;
+  $('again').onclick=function(){if(opp==='net'&&!host)return;G=deal(G.mode);cover=opp==='hot'&&G.mode==='s';if(opp==='net')em('st',G);render()};return}
+ if(cover){M.textContent='';A.innerHTML='';B.innerHTML='<div class="end"><h2>Pass the phone to '+nm(G.turn)+'</h2><button class="go" id="rdy">I’m ready</button></div>';$('rdy').onclick=function(){cover=false;render()};return}
+ if(G.mode==='s'){var L=G.last,rv=G.phase==='reveal',w=rv?L.w:0;
+  B.innerHTML='<div class="table"><div><div class="lbl">'+nm(v)+'</div>'+card(h[v][0],true,w===v?'win':w<0?'tie':'lose')+'</div><div><div class="lbl">'+nm(1-v)+'</div>'+(rv?card(h[1-v][0],false,w===v?'lose':w<0?'tie':'win'):'<div class="card back">CLASH</div>')+'</div></div>';
+  M.textContent=msgS();A.innerHTML=rv?'<button class="go" id="nx">Next card</button>':'';
+  if(rv)$('nx').onclick=function(){act('next')};
+  bind();
+  if(opp==='cpu'&&G.turn===1&&!rv)tm=setTimeout(function(){if(G&&G.turn===1&&G.phase==='pick')exec(1,'pick',cbest())},1000);
+ }else{var L2=G.last,hit=!!(L2&&L2.m);
+  var slot=function(seat){var pl=G.piles[seat],c=pl.length?pl[pl.length-1]:(hit?(seat===L2.s?L2.c:L2.o):undefined);
+   return '<div><div class="lbl">'+nm(seat)+' pile ('+pl.length+')</div><div class="pile">'+(c===undefined?'<div class="mini empty"><b>–</b><span>empty</span></div>':mini(c,hit,pl.length))+'</div></div>'};
+  B.innerHTML='<div class="table">'+slot(v)+slot(1-v)+'</div>';
+  var mine=G.turn===v;M.textContent=msgI()+(mine?'':' '+nm(G.turn)+(nm(G.turn)==='You'?' are':' is')+' up next…');
+  A.innerHTML=mine?'<button class="go" id="th">Throw card'+(opp==='hot'?' ('+nm(G.turn)+')':'')+'</button>':'';
+  if(mine)$('th').onclick=function(){act('throw')};
+  if(opp==='cpu'&&G.turn===1)tm=setTimeout(function(){if(G&&G.turn===1)exec(1,'throw')},800)}}
+
+function home(){if(room){try{room.leave()}catch(e){}room=null}clearInterval(hb);G=null;wait=false;code='';note='';render()}
+function opt(a,k,val,txt,on){return '<button class="opt'+(on?' on':'')+'" data-'+a+'="'+val+'">'+txt+'</button>'}
+function menu(){
+ $('score').innerHTML='';$('pot').textContent='';$('msg').textContent='Pick a game and an opponent.';$('act').innerHTML='';
+ var h='<div class="menu"><div class="lbl">Game</div><div class="opts">'+opt('g','g','s','Stat Battle',sm==='s')+opt('g','g','i','Initial Match',sm==='i')+'</div>'
+ +'<p>'+(sm==='s'?'Pick a stat. The higher number wins both cards. Some cards have special abilities.':'Each player throws onto their own pile. If your card has the same first-name initial as the top card of the other pile, you win every card on both piles.')+'</p>'
+ +'<div class="lbl">Cards in the game</div><div class="opts">'+[20,30,40,60,100,150,P.length-P.length%2].map(function(n){return opt('c','c',n,n===P.length-P.length%2?'All '+n:n,cnt===n)}).join('')+'</div><p>'+(cnt/2)+' cards each, picked at random from '+P.length+' cricketers. Stats are approximate career figures, just for fun.</p>'
+ +'<div class="lbl">Opponent</div><div class="opts">'+opt('o','o','cpu','CPU',so==='cpu')+opt('o','o','hot','Friend, same phone',so==='hot')+opt('o','o','net','Friend, online',so==='net')+'</div>';
+ if(so==='net'){
+  if(R===null)h+='<p>Online play only works in the Claude-hosted version of this game, opened while signed in with your friend invited. It is not available in the installed app.</p>';
+  else if(R===undefined)h+='<p>Checking online play…</p>';
+  else if(wait)h+='<p>Your game code is <b style="color:var(--gold);font-size:1.4rem">'+code.toUpperCase()+'</b>. Your friend opens this page, picks Friend online, and joins with the code. Waiting…</p>';
+  else h+='<div class="opts"><button class="go" id="host">Host a game</button><input id="cd" maxlength="6" placeholder="Code"><button class="go" id="join">Join</button></div>'+(note?'<p>'+note+'</p>':'');
+ }else h+='<button class="go" id="start">Start game</button>';
+ $('board').innerHTML=h+'</div>';
+ document.querySelectorAll('[data-g]').forEach(function(b){b.onclick=function(){sm=b.dataset.g;render()}});
+ document.querySelectorAll('[data-o]').forEach(function(b){b.onclick=function(){so=b.dataset.o;render()}});
+ document.querySelectorAll('[data-c]').forEach(function(b){b.onclick=function(){cnt=+b.dataset.c;render()}});
+ if($('start'))$('start').onclick=function(){opp=so;me=0;G=deal(sm);cover=opp==='hot'&&sm==='s';render()};
+ if($('host'))$('host').onclick=hostGame;
+ if($('join'))$('join').onclick=function(){joinGame($('cd').value)}}
+function rn(c){return 'cc-'+c.toLowerCase().replace(/[^a-z0-9]/g,'')}
+function hostGame(){code=Math.random().toString(36).slice(2,6);R.join(rn(code)).then(function(rm){room=rm;host=true;me=0;opp='net';wait=true;
+  rm.on('hi',function(m){if(m.isMe)return;if(!G)G=deal(sm);em('st',G);render()});
+  rm.on('act',function(m){if(m.isMe)return;var d=m.data||{};exec(1,d.k,d.v)});render()}).catch(function(){note='Could not open a room. Try again.';wait=false;render()})}
+function joinGame(c){c=(c||'').replace(/[^a-zA-Z0-9]/g,'');if(c.length<3){note='Enter the code your friend shared.';render();return}
+ R.join(rn(c)).then(function(rm){room=rm;host=false;me=1;opp='net';
+  rm.on('st',function(m){if(m.isMe||!okg(m.data))return;G=m.data;sm=G.mode;clearInterval(hb);render()});
+  em('hi',{});hb=setInterval(function(){if(G)clearInterval(hb);else em('hi',{})},3000);
+  note='Joined. Waiting for the host…';$('msg').textContent=note}).catch(function(){note='Could not join that code.';render()})}
+if(window.claude&&claude.use){claude.use('room').then(function(x){R=x;if(!G)render()}).catch(function(){R=null;if(!G)render()})}else R=null;
+render();
+if('serviceWorker' in navigator&&/^https?:/.test(location.protocol))navigator.serviceWorker.register('sw.js').catch(function(){});
+</script>
+</body>
+</html>
